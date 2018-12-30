@@ -4,7 +4,7 @@ mod stats;
 use std::env;
 use std::io::{self, Write};
 use std::sync::mpsc;
-//use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
@@ -62,21 +62,21 @@ fn main() {
         });
 
     let (sender, receiver) = mpsc::channel();
-//    let console_mutex = Arc::new(Mutex::new(()));
+    let console_mutex = Arc::new(Mutex::new(()));
     let mut stats = Stats::new();
     let mut first = true;
 
-//    let console_mutex_clone = console_mutex.clone();
+    let console_mutex_clone = console_mutex.clone();
     let mut metro = Metronome::new(|tick| {
         let sub_tick = tick % NUM_SUBTICKS;
-//        if let Ok(_lock) = console_mutex_clone.try_lock() {
+        if let Ok(_lock) = console_mutex_clone.try_lock() {
             if sub_tick == 0 {
                 println!("[timer] ===TICK===")
             }
             else {
                 println!("[timer] {}", sub_tick)
             }
-//        }
+        }
 
         receiver.try_recv().ok().map(|frame: u32| {
             if !first {
@@ -113,7 +113,7 @@ fn main() {
             }
 
             buf.clear();
-//            let _lock = console_mutex.lock().unwrap();
+            let _lock = console_mutex.lock().unwrap();
 
             print!("[input] Frame entered: ");
             stdout.flush().unwrap();
