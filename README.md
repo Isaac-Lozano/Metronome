@@ -57,3 +57,53 @@ Now we can figure out our `d_t` and thus how long we need to wait by
 rearranging the last equation.
 
 ![u ef ssabk aavf](https://latex.codecogs.com/png.latex?d_t%20%5Cequiv%20T%20-%20%28e_1%20&plus;%20d%29%20%5Cmod%201024)
+
+## How to use
+There are three phases to using this RNG manip.
+1. Finding Load Delay.
+2. Tuning the timer.
+3. RUN MODE.
+
+You only need to find your Load Delay once per stage (It does change slightly
+between stages, it seems), but once you have your Load Delay value, you can
+skip step 1.
+
+### Finding Load Delay
+To find load delay:
+1. Start up the program and set Load Delay and Target Frame to 0.
+2. Enter the level on a tick.
+3. Note which set you got and reference a 1024 list to find out what frame you
+landed on. (1024 list sold separately)
+4. Exit the level.
+5. Re-enter the level on another tick.
+6. Find out what frame you landed on again and note it down.
+7. Your load delay is `(second_entry_frame - first_entry_frame) % 1024`. (You
+can type the equation in google to calculate it. It should be a number in
+the range 0 to 1023)
+
+### Everything else
+Steps two and three technically are the same, but are differentiated only for
+statistics purposes. The steps are:
+1. Start up the program and set your Load Delay and Target Frame.
+2. Enter the level on a tick.
+3. Attempt your IL movement.
+4. Note which set you got and reference a 1024 list to find out what frame you
+landed on. (1024 list sold separately)
+5. Press Enter in the metronome and type in what frame you got.
+6. Exit the level and go to step 2.
+
+The first time you enter the stage is your "tuning set". This set is ignored by
+the printed-out statistics as it's basically random.
+
+## Stats
+This program prints out stats as you play. The meanings are as follows.
+- n = number of attempts
+- mean = your average distance from the target frame
+- stdd = your standard deviation from the target frame
+- mean_10 = your average distance from the target frame (last 10 attempts)
+- stdd_10 = your standard deviation from the target frame (last 10 attempts)
+
+By keeping track of your mean, you can use it to fine-tune your Load Delay. Say
+your mean after 20 attempts is "-5", that means you should reduce your Load
+Delay by 5 frames. Note that you shouldn't do this every time your mean isn't
+0, but if it consistently is away from 0 after many attempts.
